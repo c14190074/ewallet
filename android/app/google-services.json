@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "285719191414",
+    "project_id": "e-wallet-f9026",
+    "storage_bucket": "e-wallet-f9026.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285719191414:android:40fc25a713f43efef8e457",
+        "android_client_info": {
+          "package_name": "com.example.ewallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285719191414-ijuaphs7absa2t3lhebci79tln3dussc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMiuuh_c4d7JzaExg0ePuuwk8ux4sXG0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285719191414-ijuaphs7absa2t3lhebci79tln3dussc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "285719191414-gsm65vd6fi1acml74uokjrsk0rvioeu5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ewallet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

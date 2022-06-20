@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPWhayHIHU3GUivms4kwkVz-2v33ZNEk4",
+      authDomain: "e-wallet-f9026.firebaseapp.com",
+      projectId: "e-wallet-f9026",
+      storageBucket: "e-wallet-f9026.appspot.com",
+      messagingSenderId: "285719191414",
+      appId: "1:285719191414:web:5af312fedeb5af5cf8e457"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.

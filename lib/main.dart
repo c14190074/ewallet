@@ -1,9 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ewallet/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'history.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(History());
 }
 
 class MyApp extends StatefulWidget {
