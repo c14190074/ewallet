@@ -32,7 +32,6 @@ class _transferOWOState extends State<transferOWO> {
         ),
         body: Container(
           child: Wrap(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
                 color: Colors.blueAccent,
@@ -41,6 +40,7 @@ class _transferOWOState extends State<transferOWO> {
                   children: [
                     IconButton(
                       //onPressed: Navigator.of(context).pop,
+                      onPressed: () {},
                       icon: Icon(
                         Icons.arrow_back,
                         color: Colors.black,
@@ -87,7 +87,7 @@ class _transferOWOState extends State<transferOWO> {
                         ))
                       ],
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 15),
                     Text(
                       "Sumber Dana",
                       style: TextStyle(
@@ -131,38 +131,7 @@ class _transferOWOState extends State<transferOWO> {
                           )
                         ],
                       )),
-                      // child: Wrap(
-                      //   spacing: 25,
-                      //   alignment: WrapAlignment.center,
-                      //   children: [
-                      //     Icon(
-                      //       Icons.access_alarm_outlined,
-                      //       color: Colors.black,
-                      //     ),
-                      //     Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       mainAxisSize: MainAxisSize.min,
-                      //       children: [
-                      //         Text(
-                      //           "Owo Cash",
-                      //           style: TextStyle(
-                      //               color: Colors.black,
-                      //               fontWeight: FontWeight.bold,
-                      //               fontSize: 18),
-                      //         ),
-                      //         Text(
-                      //           "Balance Rp. ${balance}",
-                      //           style: TextStyle(
-                      //             color: Colors.grey,
-                      //             fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
                     ),
-                    // SizedBox(height: 25),
                     Container(
                       padding: EdgeInsets.fromLTRB(16, 20, 16, 30),
                       decoration: BoxDecoration(
@@ -211,7 +180,6 @@ class _transferOWOState extends State<transferOWO> {
                         ],
                       ),
                     ),
-                    //SizedBox(height: 20),
                     Container(
                       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                       padding: EdgeInsets.all(5),
@@ -242,17 +210,6 @@ class _transferOWOState extends State<transferOWO> {
                         ],
                       ),
                     ),
-                    // Text("Pilih Kategori:"),
-                    // DropdownButton<String>(
-                    //   items: contoh.map(buildMenuItem).toList(),
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       menuItem = value;
-                    //     });
-                    //   },
-                    //   value: menuItem,
-                    // ),
-                    // SizedBox(height: 30),
                     Container(
                       padding: EdgeInsets.all(5),
                       child: TextField(
@@ -265,6 +222,22 @@ class _transferOWOState extends State<transferOWO> {
                         onChanged: (pesan) {
                           msg = pesan;
                         },
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text("Kirim Sekarang"),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.lightGreenAccent,
+                            fixedSize: Size.fromWidth(350),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Container(
