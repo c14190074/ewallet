@@ -39,6 +39,8 @@ dependencies:
   cloud_firestore: ^3.1.18
   grouped_list: ^5.1.2
   intl: ^0.17.0
+  firebase_auth: ^3.3.20
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
