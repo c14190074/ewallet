@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
 
 class CategoryList extends StatefulWidget {
-  const CategoryList({Key? key}) : super(key: key);
-
   @override
   State<CategoryList> createState() => _CategoryListState();
 }
@@ -27,12 +24,10 @@ class Cart {
       {'id': id, 'nama': nama, 'jumData': jumData, 'noTelp': noTelp};
 }
 
-
 class _CategoryListState extends State<CategoryList> {
   String nama = "";
   final TextEditingController _namaController = TextEditingController();
 
-  // String? nama;
   int? noTelp;
   int? jumData;
 
@@ -79,9 +74,18 @@ class _CategoryListState extends State<CategoryList> {
     ),
   ];
 
-  // delData() async {
-  //   for (var element in data) {}
-  // }
+  // _CategoryListState(this.CartList);
+
+  void delData(index) {
+    for (var element in data) {
+      FirebaseFirestore.instance.runTransaction((Transaction tr) async {
+        DocumentSnapshot snapshot = await tr.get(index);
+        await tr.delete(snapshot.reference);
+      });
+
+      print("Category Deleted!");
+    }
+  }
 
   // addData() async {
   //   for (var element in data) {
@@ -205,12 +209,11 @@ class _CategoryListState extends State<CategoryList> {
                                             onPressed: () {
                                               setState(
                                                 () {
-                                                  final docUser =
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "Kategori")
-                                                          .doc(nama)
-                                                          .delete();
+                                                  // Navigator.of(context).push(
+                                                  //   MaterialPageRoute(builder: (context) -> EditData(
+
+                                                  //   ))
+                                                  // );
                                                 },
                                               );
                                             },
@@ -222,16 +225,9 @@ class _CategoryListState extends State<CategoryList> {
                                           ),
                                           MaterialButton(
                                             onPressed: () {
-                                              setState(
-                                                () {
-                                                  final docUser =
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "Kategori")
-                                                          .doc(nama)
-                                                          .delete();
-                                                },
-                                              );
+                                              setState(() {
+                                                delData(data[index].reference);
+                                              });
                                             },
                                             child: Icon(
                                               Icons.delete,
