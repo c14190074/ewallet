@@ -17,7 +17,7 @@ class _SignUpState extends State<SignUp> {
           centerTitle: true,
         ),
         backgroundColor: Colors.red[900],
-        body: SafeArea(
+        body: SingleChildScrollView(
           child: Center(
             child: Column(
               children: [
