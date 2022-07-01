@@ -27,8 +27,13 @@ class Cart {
 class _CategoryListState extends State<CategoryList> {
   String nama = "";
   final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _jumDataController = TextEditingController();
+  final TextEditingController _noTelpController = TextEditingController();
 
-  int? noTelp;
+  final CollectionReference _kategori =
+      FirebaseFirestore.instance.collection('Kategori');
+
+  String? noTelp;
   int? jumData;
 
   List<Cart> data = [
@@ -74,25 +79,111 @@ class _CategoryListState extends State<CategoryList> {
     ),
   ];
 
-  // _CategoryListState(this.CartList);
+  Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
+    await showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: _namaController,
+                  decoration: const InputDecoration(labelText: 'Nama'),
+                ),
+                // TextField(
+                //   keyboardType:
+                //   const TextInputType.numberWithOptions(decimal: true),
+                //   controller: _jumDataController,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Jumlah Data',
+                //   ),
+                // ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  child: const Text('Create'),
+                  onPressed: () async {
+                    final String nama = _namaController.text;
+                    // final int? jumData = _jumDataController.text;
+                    if (nama != null) {
+                      await _kategori.add({
+                        "nama": nama,
+                        // "jumData": jumData
+                      });
 
-  void delData(index) {
-    for (var element in data) {
-      FirebaseFirestore.instance.runTransaction((Transaction tr) async {
-        DocumentSnapshot snapshot = await tr.get(index);
-        await tr.delete(snapshot.reference);
-      });
-
-      print("Category Deleted!");
-    }
+                      _namaController.text = '';
+                      // _jumDataController.text = '';
+                      Navigator.of(context).pop();
+                    }
+                  },
+                )
+              ],
+            ),
+          );
+        });
   }
 
-  // addData() async {
-  //   for (var element in data) {
-  //     FirebaseFirestore.instance.collection('Kategori').add(element);
-  //   }
-  //   print('New Category Added!');
-  // }
+  // _CategoryListState(this.CartList);
+  Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
+    if (documentSnapshot != null) {
+      _namaController.text = documentSnapshot['nama'];
+    }
+
+    await showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: _namaController,
+                  decoration: const InputDecoration(labelText: 'Nama'),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  child: const Text('Update'),
+                  onPressed: () async {
+                    final String nama = _namaController.text;
+                    if (nama != null) {
+                      await _kategori
+                          .doc(documentSnapshot!.id)
+                          .update({"nama": nama});
+                      _namaController.text = '';
+                      Navigator.of(context).pop();
+                    }
+                  },
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  Future<void> _delete(String kategoriId) async {
+    await _kategori.doc(kategoriId).delete();
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('You have successfully deleted a category')));
+  }
 
   void iniState() {
     super.initState();
@@ -116,222 +207,220 @@ class _CategoryListState extends State<CategoryList> {
 
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: Container(),
-          title: Text("Category"),
-          bottom: PreferredSize(
-            preferredSize: Size(3, 130),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Container(
-                    height: 45,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                    ),
-                    child: TextFormField(
-                      controller: _namaController,
-                      onFieldSubmitted: (covariant) {
-                        setState(() {
-                          nama = covariant;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
+          appBar: AppBar(
+            elevation: 0,
+            leading: Container(),
+            title: Text("Category"),
+            bottom: PreferredSize(
+              preferredSize: Size(3, 130),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white,
+                      ),
+                      child: TextFormField(
+                        controller: _namaController,
+                        onFieldSubmitted: (covariant) {
+                          setState(() {
+                            nama = covariant;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                          ),
+                          hintText: "Search ...",
                         ),
-                        hintText: "Search ...",
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  height: 30,
-                  width: double.infinity,
-                  color: Colors.white.withOpacity(0.9),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, top: 3),
-                    child: Text(
-                      "Search for $nama",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                  Container(
+                    height: 30,
+                    width: double.infinity,
+                    color: Colors.white.withOpacity(0.9),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 3),
+                      child: Text(
+                        "Search for $nama",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Kategori').snapshots(),
-          builder: (context, snapshots) {
-            return (snapshots.connectionState == ConnectionState.waiting)
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView.builder(
-                    itemCount: snapshots.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      var data = snapshots.data!.docs[index].data()
-                          as Map<String, dynamic>;
+          body: StreamBuilder(
+            stream: _kategori.snapshots(), // connect to fire
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              return (snapshot.connectionState == ConnectionState.waiting)
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final DocumentSnapshot documentSnapshot =
+                            snapshot.data!.docs[index];
+                        var data = snapshot.data!.docs[index].data()
+                            as Map<String, dynamic>;
 
-                      if (nama.isEmpty) {
-                        return Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(left: 25),
-                              height: 61,
-                              child: Row(children: <Widget>[
-                                Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          data['nama'],
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          MaterialButton(
-                                            onPressed: () {
-                                              setState(
-                                                () {
-                                                  // Navigator.of(context).push(
-                                                  //   MaterialPageRoute(builder: (context) -> EditData(
-
-                                                  //   ))
-                                                  // );
-                                                },
-                                              );
-                                            },
-                                            child: Icon(
-                                              Icons.edit,
-                                              size: 20,
-                                              // color: Colors.red,
+                        if (nama.isEmpty) {
+                          return Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(left: 25),
+                                height: 73,
+                                child: Row(children: <Widget>[
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            data['nama'],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              color: Colors.black,
                                             ),
                                           ),
-                                          MaterialButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                delData(data[index].reference);
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ]),
-                            ),
-                            Divider(
-                              thickness: 2,
-                            )
-                          ],
-                        );
-                      }
-                      if (data['nama']
-                          .toString()
-                          .toLowerCase()
-                          .startsWith(nama.toLowerCase())) {
-                        return Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(left: 16),
-                              height: 100,
-                              child: Row(children: <Widget>[
-                                Container(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        data['nama'],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                          color: Colors.blue[200],
                                         ),
-                                      ),
-                                      MaterialButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              // delData();
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ]),
-                            ),
-                            Divider(
-                              thickness: 2,
-                            )
-                          ],
-                        );
-                      }
-
-                      return Container(
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Container(
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
+                                        Row(
+                                          children: [
+                                            // Press this button to edit a single product
+                                            IconButton(
+                                                icon: const Icon(Icons.edit),
+                                                onPressed: () =>
+                                                    _update(documentSnapshot)),
+                                            // This icon button is used to delete a single product
+                                            IconButton(
+                                                icon: const Icon(Icons.delete),
+                                                onPressed: () => _delete(
+                                                    documentSnapshot.id)),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    child: TextFormField(
-                                      controller: _namaController,
-                                      onFieldSubmitted: (covariant) {
-                                        setState(() {
-                                          nama = covariant;
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                          Icons.list,
+                                  ),
+                                ]),
+                              ),
+                              Divider(
+                                thickness: 2,
+                              )
+                            ],
+                          );
+                        }
+
+                        //search by categori
+                        if (data['nama']
+                            .toString()
+                            .toLowerCase()
+                            .startsWith(nama.toLowerCase())) {
+                          return Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(left: 25),
+                                height: 73,
+                                child: Row(children: <Widget>[
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            data['nama'],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
-                                        hintText: "Add New Categories",
+                                        Row(
+                                          children: [
+                                            // Press this button to edit a single product
+                                            IconButton(
+                                                icon: const Icon(Icons.edit),
+                                                onPressed: () =>
+                                                    _update(documentSnapshot)),
+                                            // This icon button is used to delete a single product
+                                            IconButton(
+                                                icon: const Icon(Icons.delete),
+                                                onPressed: () => _delete(
+                                                    documentSnapshot.id)),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Divider(
+                                thickness: 2,
+                              )
+                            ],
+                          );
+                        }
+
+                        return Container(
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Container(
+                                      height: 45,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white,
+                                      ),
+                                      child: TextFormField(
+                                        controller: _namaController,
+                                        onFieldSubmitted: (covariant) {
+                                          setState(() {
+                                            nama = covariant;
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(
+                                            Icons.list,
+                                          ),
+                                          hintText: "Add New Categories",
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-          },
-        ),
-      ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+            },
+          ),
+          // Add new product
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _create(),
+            child: const Icon(Icons.add),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat),
     );
   }
 }
